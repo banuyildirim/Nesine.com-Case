@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import { Row, Col, Card } from 'antd';
+import { Row, Col, Card, Spin } from 'antd';
 import axios from "axios";
 import StandardTable from '../components/table';
 
@@ -8,7 +8,7 @@ class Home extends PureComponent {
     super(props);
     this.state = {
       data: [],
-      count: 0
+      tableLoading: true
     }
   }
 
@@ -19,14 +19,15 @@ class Home extends PureComponent {
   getData = () => {
     axios.get(`https://nesine-case-study.onrender.com/bets`)
     .then(res => {
-      this.setState({ data:  res.data, count: res.data.length});
+      this.setState({ data:  res.data});
+      res.data ? this.setState({ tableLoading: false }) : this.setState({ tableLoading: true });
     })
   }
 
   render() {
     let columns = [
       {
-        title: `Event Count: ${this.state.count}`,
+        title: () => 'Event Count: ' + this.state.data.length ,
         key: 'count',
         render: (text, value) => <span>{value.D + ' ' + value.DAY + ' ' + value.LN} <br></br> <b style={{fontWeight:'650'}}>{value.C}</b> { + ' ' + value.T + ' ' + value.N} </span>,
       },
@@ -128,10 +129,13 @@ class Home extends PureComponent {
         </Row>
         <div className={'content__table'}>
           <Row>
+          <Spin size="large" spinning={this.state.tableLoading}>
             <StandardTable 
               dataSource={this.state.data} 
               columns={columns} 
-              size="middle"/>
+              size="middle" 
+            />
+          </Spin>
           </Row>
         </div>
       </div>
