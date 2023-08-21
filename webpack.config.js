@@ -46,8 +46,7 @@ const config = {
     devServer: {
         host: "localhost",
         port: 4000,
-        open: true,
-        https: true
+        open: true
     },
 };
 
