@@ -18,7 +18,7 @@ class StandardTable extends PureComponent {
       dataSource={list} 
       columns={this.state.columns}  
       bordered={true}
-      className={'tableStyle'}
+      className='tableStyle'
       />
     )
   }

@@ -8,12 +8,33 @@ class Home extends PureComponent {
     super(props);
     this.state = {
       data: [],
-      tableLoading: true
+      tableLoading: true,
+      basketObject: {},
+      basketData: [],
+      totalData: 0,
+      dataClickable: false
     }
   }
 
   componentDidMount() {
     this.getData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.basketObject !== this.state.basketObject) {
+      this.setState({basketData: [...this.state.basketData, this.state.basketObject]})
+    }
+    if(prevState.basketData !== this.state.basketData) {
+      // Calculation and updating of total data
+      if(this.state.basketData.length === 1) {
+        this.setState({totalData: this.state.basketData[0]['rate'] })
+      } else {
+        const sum = this.state.basketData.reduce((accumulator, object) => {
+          return accumulator + Number(object.rate);
+        }, 0);
+        this.setState({totalData: sum})
+      }
+    }
   }
 
   getData = () => {
@@ -24,7 +45,20 @@ class Home extends PureComponent {
     })
   }
 
-  render() {
+  // updating when data is added to basket
+  addBasket = (text, value, e) => {
+    const basketData = this.state.basketData;
+    this.setState({dataClickable: true})
+    this.setState({basketObject: Object.assign({mbs: value.OCG[1].MBS, code: value.C, event: value.N, rate: e })})
+    const index = basketData.findIndex(item => {
+      if (item.code === value.C) {
+        return true;
+      }
+    });
+    basketData.some(item => item.code === value.C) ? basketData.splice(index,1) : undefined
+  }
+
+  render() {    
     let columns = [
       {
         title: () => 'Event Count: ' + this.state.data.length ,
@@ -49,7 +83,7 @@ class Home extends PureComponent {
       {
         title: 'x',
         key: 'x',
-        render: (text, value) => <span>x <br></br> {value.OCG[1].OC[1].O}</span>,
+        render: (text, value) => <span>x <br></br> <a onClick={() => this.addBasket(text, value, value.OCG[1].OC[1].O)}>{value.OCG[1].OC[1].O}</a></span>
       },
       {
         title: '2',
@@ -64,7 +98,7 @@ class Home extends PureComponent {
       {
         title: 'Üst',
         key: 'Üst',
-        render: (text, value) => <span>Üst <br></br> {value.OCG[5].OC[26].O}</span>,
+        render: (text, value) => <span>Üst <br></br> <a onClick={() => this.addBasket(text, value, value.OCG[5].OC[26].O)}>{value.OCG[5].OC[26].O}</a></span>,
       },
       {
         title: 'H1',
@@ -78,7 +112,7 @@ class Home extends PureComponent {
       },
       {
         title: 'X',
-        key: 'Second',
+        key: 'Second X',
         render: (text, value) => <span>x <br></br></span>,
       },
       {
@@ -137,6 +171,15 @@ class Home extends PureComponent {
             />
           </Spin>
           </Row>
+          <div>
+            <Card className='corner_card' title={`Toplam Tutar: ${this.state.totalData}`}  >             
+              {this.state.basketData.length > 0 ? 
+               this.state.basketData.map(item => {
+                return <p key={item.code}>{item.mbs + ' Kod: ' + item.code + ' Maç: ' + item.event + ' Oran: ' + item.rate}</p> 
+              })
+              : undefined}
+            </Card>
+          </div>
         </div>
       </div>
     );
