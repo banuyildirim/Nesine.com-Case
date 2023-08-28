@@ -159,7 +159,6 @@ class Home extends PureComponent {
     return (
       <div>
         <Row className={'content__header'}>
-          <a className={'table_title'} href="https://www.nesine.com/" title="nesine.com">NESİNE.COM</a>
         </Row>
         <div className={'content__table'}>
           <Row>

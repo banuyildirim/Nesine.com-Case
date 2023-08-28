@@ -99,15 +99,16 @@ video {
 }
 
 .table_title {
-    margin-left: 15px !important;
-    margin-top: 15px !important;
-    margin-bottom: 10px !important;
-    font-weight: bold !important; 
-    color: #fc0 !important;
+    margin-left: 15px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    font-weight: bold; 
+    color: #fc0;
 }
 
 .tableStyle {
     margin-left: 10px;
+    margin-top: 10px;
 }
 /* HTML5 display-role reset for older browsers */
 article,
